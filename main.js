@@ -16,6 +16,7 @@ function createWindow() {
     width: 800,
     height: 600,
     resizable: isDev ? true : false,
+    backgroundColor: "white",
     webPreferences: {
       //preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -26,7 +27,9 @@ function createWindow() {
   mainWindow.loadFile("app/index.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 // This method will be called when Electron has finished
