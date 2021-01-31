@@ -12,7 +12,7 @@
       content="default-src 'self' 'unsafe-inline'; script-src 'self' "
     />
     <title>Chronos</title>
-    <link rel="stylesheet" href="css/materialize.min.css" />
+    <link rel="stylesheet" href="css/materialize.css" />
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
@@ -71,25 +71,38 @@
           <tr>
             <td class="top-left">
               <h5>Important and Urgent</h5>
-              <ul class="collection">
+              <ol class="collection">
                 <li class="collection-item">The first item</li>
                 <li class="collection-item">The second item</li>
                 <li class="collection-item">The third item</li>
-              </ul>
+              </ol>
             </td>
             <td class="top-right">
-              Top right Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Placeat impedit sint, tenetur expedita saepe fugiat similique
-              laboriosam, eos architecto voluptatum assumenda voluptas mollitia?
-              Quasi fuga soluta repellat molestiae obcaecati dolores,
-              reprehenderit ut quo pariatur aut doloribus esse, vero reiciendis
-              nobis consectetur numquam. Minima saepe, officiis quisquam
-              recusandae similique earum quasi.
+              <h5>Not Important and Urgent</h5>
+              <ol class="collection">
+                <li class="collection-item">The first item</li>
+                <li class="collection-item">The second item</li>
+                <li class="collection-item">The third item</li>
+              </ol>
             </td>
           </tr>
           <tr>
-            <td class="bottom-left">Bottom left</td>
-            <td class="bottom-right">Bottom right</td>
+            <td class="bottom-left">
+              <h5>Important and Not Urgent</h5>
+              <ol class="collection">
+                <li class="collection-item">The first item</li>
+                <li class="collection-item">The second item</li>
+                <li class="collection-item">The third item</li>
+              </ol>
+            </td>
+            <td class="bottom-right">
+              <h5>Not Important and Not Urgent</h5>
+              <ol class="collection">
+                <li class="collection-item">The first item</li>
+                <li class="collection-item">The second item</li>
+                <li class="collection-item">The third item</li>
+              </ol>
+            </td>
           </tr>
         </table>
 
@@ -134,7 +147,7 @@
             </div>
             <div class="row">
               <button
-                class="btn waves-effect waves-light col s3 m3 l2 offset-s9 offset-m9 offset-l10"
+                class="btn waves-effect waves-light btn-cable-pink col s3 m3 l2 offset-s9 offset-m9 offset-l10"
                 type="submit"
                 name="action"
               >
@@ -148,14 +161,17 @@
       <div class="complete">
         <h4>Completed Tasks</h4>
         <p class="sub-instruction">These tasks are cleared on a daily basis</p>
-        <ul class="collection">
+        <ul class="collection shad">
           <li class="collection-item">
             Task, date
-            <span class="badge red white-text waves-effect waves-light">X</span>
+            <span
+              class="badge btn-cable-pink white-text waves-effect waves-light"
+              >X</span
+            >
           </li>
           <li class="collection-item">
             Task, date<span
-              class="badge red white-text waves-effect waves-light"
+              class="badge btn-cable-pink white-text waves-effect waves-light"
               >X</span
             >
           </li>

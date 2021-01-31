@@ -1,33 +1,60 @@
+:root {
+  --borderStyle: 3px solid #f1aa9b;
+  --backgroundColor: #48426d;
+  --primaryTextColor: #f0c38e;
+  --secondaryTextColor: #eed8c0;
+
+  /* 312c51 - darkPurple
+  48426d - lighterPurple
+  f0c38e - lightOrange
+  f1aa9b - lightPink */
+
+  /* colors to watch out for in case i want to further corrupt materialize */
+  /* c9f3ef 
+  2ab7a9
+  26a69a
+  4caf50 */
+}
+body {
+  background-color: var(--backgroundColor);
+  color: var(--primaryTextColor);
+  /* color:rgb(49, 44, 81); */
+}
 table,
 tr,
 td {
   text-align: left;
 }
 td.top-left {
-  border-right: 1px solid pink;
-  border-bottom: 1px solid pink;
+  border-right: var(--borderStyle);
+  border-bottom: var(--borderStyle);
   padding-right: 20px;
+  text-align: center;
 }
 td.top-right {
-  border-left: 1px solid pink;
-  border-bottom: 1px solid pink;
+  border-left: var(--borderStyle);
+  border-bottom: var(--borderStyle);
+  text-align: center;
   /* height: 50%; */
 }
 td.bottom-left {
-  border-right: 1px solid pink;
-  border-top: 1px solid pink;
+  border-right: var(--borderStyle);
+  border-top: var(--borderStyle);
   border-bottom: none;
+  padding-right: 20px;
+  text-align: center;
 }
 td.bottom-right {
-  border-left: 1px solid pink;
-  border-top: 1px solid pink;
+  border-left: var(--borderStyle);
+  border-top: var(--borderStyle);
   border-bottom: none;
+  text-align: center;
 }
 tr {
   border-bottom: none;
 }
 td {
-  width: 200px;
+  width: 50%;
   vertical-align: top;
   padding-left: 1em;
 }
@@ -56,7 +83,7 @@ div.complete {
 }
 
 p.sub-instruction {
-  color: #757575;
+  color: var(--secondaryTextColor);
 }
 
 .quad-title {
@@ -65,6 +92,28 @@ p.sub-instruction {
   margin-bottom: 20px;
 }
 .bored {
-  border: 1px solid #d0d0d0;
+  border: 1px solid #312c51;
+  background-color: #312c51;
   padding: 15px 25px;
+  color: var(--secondaryTextColor);
+  /* box-shadow: rgba(17, 12, 46, 0.35) 0px 48px 100px 0px; */
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.1) 0px 10px 10px -5px;
+  border-radius: 10px;
+}
+ol.collection {
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.1) 0px 10px 10px -5px;
+  text-align: left;
+}
+.collection,
+.collection-item {
+  background-color: #312c51;
+  color: var(--secondaryTextColor);
+}
+ul.collection.shad {
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.1) 0px 10px 10px -5px;
 }
