@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 // Set environment
@@ -58,3 +58,40 @@ app.on("window-all-closed", function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+let infoWindow;
+function createInfoWindow() {
+  // Create the browser window.
+  infoWindow = new BrowserWindow({
+    title: "Chronos",
+    width: 500,
+    height: 300,
+    resizable: isDev ? true : false,
+    backgroundColor: "white",
+    webPreferences: {
+      //preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+    },
+  });
+
+  // and load the index.html of the app.
+  infoWindow.loadFile("app/info.html");
+
+  // Open the DevTools.
+  if (isDev) {
+    // infoWindow.webContents.openDevTools();
+  }
+}
+
+ipcMain.on("ol-clicked", (e, ol) => {
+  console.log("I'm here in the main process", ol);
+  createInfoWindow();
+  infoWindow.webContents.once("dom-ready", () => {
+    // Why you need to add webcontents idk, but the window has to load before it can recieve ipcMessages "win.on('ready-to-show')"" apparently works too.
+    infoWindow.webContents.send("ol-delivery", ol);
+  });
+});
+
+ipcMain.on("add-tasks", (e, data) => {
+  console.log(data);
+});
