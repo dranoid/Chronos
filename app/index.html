@@ -18,138 +18,143 @@
   <body>
     <div class="container">
       <div class="blurrable">
-      <h3 class="quad-title">Priority Quadrant</h3>
-      <div class="row">
-        <div class="col s1 m1 l1">
-          <!-- to center the quadrant -->
+        <h3 class="quad-title">Priority Quadrant</h3>
+        <div class="row">
+          <div class="col s1 m1 l1">
+            <!-- to center the quadrant -->
+          </div>
+
+          <table class="col s10 quad-table">
+            <tr>
+              <td class="top-left">
+                <h5>Important and Urgent</h5>
+                <ol class="collection IUList">
+                  <li class="collection-item">Buy milk</li>
+                  <li class="collection-item">Buy orange</li>
+                  <li class="collection-item">Buy scapel</li>
+                </ol>
+              </td>
+              <td class="top-right">
+                <h5>Unimportant and Urgent</h5>
+                <ol class="collection NIUList">
+                  <li class="collection-item">Burn the meat</li>
+                  <li class="collection-item">Dump the thrash</li>
+                  <li class="collection-item">Finish star wars</li>
+                </ol>
+              </td>
+            </tr>
+            <tr>
+              <td class="bottom-left">
+                <h5>Important and Not Urgent</h5>
+                <ol class="collection INUList">
+                  <li class="collection-item">Give him a loan</li>
+                  <li class="collection-item">Buy my harley davidson</li>
+                  <li class="collection-item">Get my foam from AMD or ryzen</li>
+                </ol>
+              </td>
+              <td class="bottom-right">
+                <h5>Unimportant and Not Urgent</h5>
+                <ol class="collection NINUList">
+                  <li class="collection-item">
+                    This is in preparation for the complete task part
+                    <div class="further-info desc-text">
+                      this is the description
+                    </div>
+                    <span class="further-info time">time part</span>
+                  </li>
+                  <li class="collection-item">
+                    Remember to dream big but start small
+                  </li>
+                  <li class="collection-item">
+                    Tell that p***y n***a to check his period
+                  </li>
+                </ol>
+              </td>
+            </tr>
+          </table>
+
+          <div class="col s1 m1 l1">
+            <!-- to center the quadrant -->
+          </div>
         </div>
 
-        <table class="col s10 quad-table">
-          <tr>
-            <td class="top-left">
-              <h5>Important and Urgent</h5>
-              <ol class="collection IUList">
-                <li class="collection-item">Buy milk</li>
-                <li class="collection-item">Buy orange</li>
-                <li class="collection-item">Buy scapel</li>
-              </ol>
-            </td>
-            <td class="top-right">
-              <h5>Unimportant and Urgent</h5>
-              <ol class="collection NIUList">
-                <li class="collection-item">Burn the meat</li>
-                <li class="collection-item">Dump the thrash</li>
-                <li class="collection-item">Finish star wars</li>
-              </ol>
-            </td>
-          </tr>
-          <tr>
-            <td class="bottom-left">
-              <h5>Important and Not Urgent</h5>
-              <ol class="collection INUList">
-                <li class="collection-item">Give him a loan</li>
-                <li class="collection-item">Buy my harley davidson</li>
-                <li class="collection-item">Get my foam from AMD or ryzen</li>
-              </ol>
-            </td>
-            <td class="bottom-right">
-              <h5>Unimportant and Not Urgent</h5>
-              <ol class="collection NINUList">
-                <li class="collection-item">
-                  This is in preparation for the complete task part
-                  <div class="further-info desc-text">this is the description</div>
-                  <span class="further-info time">time part</span>
-                </li>
-                <li class="collection-item">
-                  Remember to dream big but start small
-                </li>
-                <li class="collection-item">
-                  Tell that p***y n***a to check his period
-                </li>
-              </ol>
-            </td>
-          </tr>
-        </table>
-
-        <div class="col s1 m1 l1">
-          <!-- to center the quadrant -->
-        </div>
-      </div>
-
-      <div class="add-data">
-        <h4>Add task</h4>
-        <p class="sub-instruction">
-          Describe and add your tasks to their appropriate place in the quadrant
-        </p>
-        <!-- <div class="collection"> -->
-        <div class="bored">
-          <div class="collection-item">
-            <div class="row">
-              <div class="input-field col s8 m8 l8">
-                <input id="task" type="text" class="validate" />
-                <label for="task">Task</label>
+        <div class="add-data">
+          <h4>Add task</h4>
+          <p class="sub-instruction">
+            Describe and add your tasks to their appropriate place in the
+            quadrant
+          </p>
+          <!-- <div class="collection"> -->
+          <div class="bored">
+            <div class="collection-item">
+              <div class="row">
+                <div class="input-field col s8 m8 l8">
+                  <input id="task" type="text" class="validate" />
+                  <label for="task">Task</label>
+                </div>
+                <div class="input-field col s4 m4 l4">
+                  <select id="priority">
+                    <option value="0" disabled selected>Select priority</option>
+                    <option value="IU">Important and Urgent</option>
+                    <option value="NIU">Unimportant and Urgent</option>
+                    <option value="INU">Important and Not Urgent</option>
+                    <option value="NINU">Unimportant and Not Urgent</option>
+                  </select>
+                  <label>Priority Level</label>
+                </div>
               </div>
-              <div class="input-field col s4 m4 l4">
-                <select id="priority">
-                  <option value="0" disabled selected>Select priority</option>
-                  <option value="IU">Important and Urgent</option>
-                  <option value="NIU">Unimportant and Urgent</option>
-                  <option value="INU">Important and Not Urgent</option>
-                  <option value="NINU">Unimportant and Not Urgent</option>
-                </select>
-                <label>Priority Level</label>
+              <div class="row">
+                <div class="input-field col s12 m12 l12">
+                  <textarea
+                    id="task-desc"
+                    placeholder="Short description of the task (optional)..."
+                    class="materialize-textarea"
+                  ></textarea>
+                  <label for="task-desc">Description</label>
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12 m12 l12">
-                <textarea
-                  id="task-desc"
-                  placeholder="Short description of the task (optional)..."
-                  class="materialize-textarea"
-                ></textarea>
-                <label for="task-desc">Description</label>
+              <div class="row">
+                <button
+                  id="btn-add"
+                  class="btn waves-effect waves-light btn-cable-pink col s3 m3 l2 offset-s9 offset-m9 offset-l10"
+                  type="submit"
+                  name="action"
+                >
+                  Add
+                  <!-- <i class="material-icons right">send</i> -->
+                </button>
               </div>
-            </div>
-            <div class="row">
-              <button
-                id="btn-add"
-                class="btn waves-effect waves-light btn-cable-pink col s3 m3 l2 offset-s9 offset-m9 offset-l10"
-                type="submit"
-                name="action"
-              >
-                Add
-                <!-- <i class="material-icons right">send</i> -->
-              </button>
             </div>
           </div>
         </div>
+        <div class="complete">
+          <h4>Completed Tasks</h4>
+          <p class="sub-instruction">
+            These tasks are cleared on a daily basis
+          </p>
+          <ul class="collection shad">
+            <li class="collection-item">
+              Task, date
+              <span
+                class="badge btn-cable-pink white-text waves-effect waves-light"
+                >X</span
+              >
+            </li>
+            <li class="collection-item">
+              Task, date<span
+                class="badge btn-cable-pink white-text waves-effect waves-light"
+                >X</span
+              >
+            </li>
+            <li class="collection-item">
+              Task, date<span
+                class="badge btn-cable-pink white-text waves-effect waves-light"
+                >X</span
+              >
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="complete">
-        <h4>Completed Tasks</h4>
-        <p class="sub-instruction">These tasks are cleared on a daily basis</p>
-        <ul class="collection shad">
-          <li class="collection-item">
-            Task, date
-            <span
-              class="badge btn-cable-pink white-text waves-effect waves-light"
-              >X</span
-            >
-          </li>
-          <li class="collection-item">
-            Task, date<span
-              class="badge btn-cable-pink white-text waves-effect waves-light"
-              >X</span
-            >
-          </li>
-          <li class="collection-item">
-            Task, date<span
-              class="badge btn-cable-pink white-text waves-effect waves-light"
-              >X</span
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
       <div class="extend-info further-info"></div>
     </div>
   </body>
