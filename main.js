@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
 
 // Set environment
@@ -9,9 +9,10 @@ const isDev = process.env.NODE_ENV == "development" ? true : false;
 const isMac = process.platform === "darwin" ? true : false;
 const isWin = process.platform === "win32" ? true : false;
 
+let mainWindow;
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     title: "Chronos",
     width: 800,
     height: 600,
@@ -37,6 +38,19 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+
+  mainWindow.webContents.on("before-input-event", (event, input) => {
+    // console.log(input.key);
+    // console.log(input);
+    if (
+      input.control &&
+      input.key.toLowerCase() === "arrowup" &&
+      input.key.toLowerCase() === "arrowleft"
+    ) {
+      console.log("Pressed Control+I");
+      event.preventDefault();
+    }
+  });
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -95,3 +109,50 @@ ipcMain.on("ol-clicked", (e, ol) => {
 ipcMain.on("add-tasks", (e, data) => {
   console.log(data);
 });
+const template = [
+  { role: "editMenu" },
+  {
+    label: "Actions",
+    submenu: [
+      {
+        label: `Top Left Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
+        accelerator: "CmdOrCtrl+Up+Left", // Find out what the arrow keys are represented with
+        click: () => {
+          mainWindow.webContents.send("extend-tl");
+        },
+      },
+      {
+        label: `Top Right Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
+        accelerator: "CmdOrCtrl+Up+Right", // Find out what the arrow keys are represented with
+        click: () => {
+          mainWindow.webContents.send("extend-tr");
+        },
+      },
+      {
+        label: `Bottom Left Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
+        accelerator: "CmdOrCtrl+Down+Left", // Find out what the arrow keys are represented with
+        click: () => {
+          mainWindow.webContents.send("extend-bl");
+        },
+      },
+      {
+        label: `Bottom Right Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
+        accelerator: "CmdOrCtrl+Down+Right", // Find out what the arrow keys are represented with
+        click: () => {
+          mainWindow.webContents.send("extend-br");
+        },
+      },
+      { type: "separator" },
+      {
+        label: "Settings",
+        accelerator: "CmdOrCtrl+K",
+        click: () => {
+          console.log("Settings");
+        },
+      },
+    ],
+  },
+  ...(isDev ? [{ role: "viewMenu" }] : []),
+];
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);

@@ -108,15 +108,16 @@ function addToQuadrant(taskObj) {
 
 // to display further info in a div
 const extendInfo = document.querySelector(".extend-info");
-const extendInfoList = document.querySelector(".extend-info>ol");
+
 topLeft.addEventListener("click", (e) => {
   e.stopPropagation(); // Stop propagation to prevent the 'toggle' event in the body from firing, something that has to do with bubbling
-  const header = document.createTextNode(
-    document.querySelector(".top-left h5").innerHTML
-  );
-  extendInfo.innerHTML = ""; // To reset the contents of the div on each click
-  const className = "top-left-id";
-  createExtendInfo(extendInfo, topLeft, header, className);
+  // const header = document.createTextNode(
+  //   document.querySelector(".top-left h5").innerHTML
+  // );
+  // extendInfo.innerHTML = ""; // To reset the contents of the div on each click
+  // const className = "top-left-id";
+  // createExtendInfo(extendInfo, topLeft, header, className);
+  extendConfig(".top-left h5", "top-left-id");
 });
 topRight.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -201,6 +202,11 @@ document.addEventListener("click", function (e) {
       completeTask.classList.add("further-info");
     }
   }
+});
+
+// This section handles everything from the main process
+ipcRenderer.on("extend-tl", (eve) => {
+  extendConfig(".top-left h5", "top-left-id");
 });
 
 function createLiNode(ol, newLi, taskTxt, descTxt, date) {
@@ -294,4 +300,14 @@ function areTheSame(origLi, liDesc) {
   } else {
     return false;
   }
+}
+
+// To configure the extendInfo div
+function extendConfig(headerClass, olClass) {
+  const header = document.createTextNode(
+    document.querySelector(headerClass).innerHTML
+  );
+  extendInfo.innerHTML = ""; // To reset the contents of the div on each
+  const className = olClass;
+  createExtendInfo(extendInfo, topRight, header, className);
 }
