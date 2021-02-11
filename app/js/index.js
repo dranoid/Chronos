@@ -1,6 +1,7 @@
 // nodeIntegration is deprecated and unsafe, learn to use preload and contextIsolation
 const { ipcRenderer } = require("electron");
 const moment = require("moment");
+const mousetrap = require("mousetrap");
 
 const body = document.querySelector("body");
 const blurrable = document.querySelector(".blurrable");
@@ -111,40 +112,27 @@ const extendInfo = document.querySelector(".extend-info");
 
 topLeft.addEventListener("click", (e) => {
   e.stopPropagation(); // Stop propagation to prevent the 'toggle' event in the body from firing, something that has to do with bubbling
-  // const header = document.createTextNode(
-  //   document.querySelector(".top-left h5").innerHTML
-  // );
-  // extendInfo.innerHTML = ""; // To reset the contents of the div on each click
-  // const className = "top-left-id";
-  // createExtendInfo(extendInfo, topLeft, header, className);
-  extendConfig(".top-left h5", "top-left-id");
+  const headerClass = ".top-left h5";
+  const olClass = "top-left-id";
+  createExtendInfo(extendInfo, topLeft, headerClass, olClass);
 });
 topRight.addEventListener("click", (e) => {
   e.stopPropagation();
-  const header = document.createTextNode(
-    document.querySelector(".top-right h5").innerHTML
-  );
-  extendInfo.innerHTML = ""; // To reset the contents of the div on each
-  const className = "top-right-id";
-  createExtendInfo(extendInfo, topRight, header, className);
+  const headerClass = ".top-right h5";
+  const olClass = "top-right-id";
+  createExtendInfo(extendInfo, topRight, headerClass, olClass);
 });
 botLeft.addEventListener("click", (e) => {
   e.stopPropagation();
-  const header = document.createTextNode(
-    document.querySelector(".bottom-left h5").innerHTML
-  );
-  extendInfo.innerHTML = ""; // To reset the contents of the div on each click
-  const className = "bottom-left-id";
-  createExtendInfo(extendInfo, botLeft, header, className);
+  const headerClass = ".bottom-left h5";
+  const olClass = "bottom-left-id";
+  createExtendInfo(extendInfo, botLeft, headerClass, olClass);
 });
 botRight.addEventListener("click", (e) => {
   e.stopPropagation();
-  const header = document.createTextNode(
-    document.querySelector(".bottom-right h5").innerHTML
-  );
-  extendInfo.innerHTML = ""; // To reset the contents of the div on each click
-  const className = "bottom-right-id";
-  createExtendInfo(extendInfo, botRight, header, className);
+  const headerClass = ".bottom-right h5";
+  const olClass = "bottom-right-id";
+  createExtendInfo(extendInfo, botRight, headerClass, olClass);
 });
 
 extendInfo.addEventListener("click", (e) => {
@@ -204,9 +192,52 @@ document.addEventListener("click", function (e) {
   }
 });
 
+// Shortcuts
+mousetrap.bind("mod+w", (e, combo) => {
+  const headerClass = ".top-left h5";
+  const olClass = "top-left-id";
+  createExtendInfo(extendInfo, topLeft, headerClass, olClass);
+  return false;
+});
+mousetrap.bind("mod+e", (e, combo) => {
+  const headerClass = ".top-right h5";
+  const olClass = "top-right-id";
+  createExtendInfo(extendInfo, topRight, headerClass, olClass);
+  return false;
+});
+mousetrap.bind("mod+s", (e, combo) => {
+  const headerClass = ".bottom-left h5";
+  const olClass = "bottom-left-id";
+  createExtendInfo(extendInfo, botLeft, headerClass, olClass);
+  return false;
+});
+mousetrap.bind("mod+d", (e, combo) => {
+  const headerClass = ".bottom-right h5";
+  const olClass = "bottom-right-id";
+  createExtendInfo(extendInfo, botRight, headerClass, olClass);
+  return false;
+});
+
 // This section handles everything from the main process
 ipcRenderer.on("extend-tl", (eve) => {
-  extendConfig(".top-left h5", "top-left-id");
+  const headerClass = ".top-left h5";
+  const olClass = "top-left-id";
+  createExtendInfo(extendInfo, topLeft, headerClass, olClass);
+});
+ipcRenderer.on("extend-tr", (eve) => {
+  const headerClass = ".top-right h5";
+  const olClass = "top-right-id";
+  createExtendInfo(extendInfo, topRight, headerClass, olClass);
+});
+ipcRenderer.on("extend-bl", (eve) => {
+  const headerClass = ".bottom-left h5";
+  const olClass = "bottom-left-id";
+  createExtendInfo(extendInfo, botLeft, headerClass, olClass);
+});
+ipcRenderer.on("extend-br", (eve) => {
+  const headerClass = ".bottom-right h5";
+  const olClass = "bottom-right-id";
+  createExtendInfo(extendInfo, botRight, headerClass, olClass);
 });
 
 function createLiNode(ol, newLi, taskTxt, descTxt, date) {
@@ -225,7 +256,13 @@ function createLiNode(ol, newLi, taskTxt, descTxt, date) {
   ol.appendChild(newLi);
 }
 
-function createExtendInfo(extendInfo, el, header, className) {
+function createExtendInfo(extendInfo, el, headerClass, olClass) {
+  const header = document.createTextNode(
+    document.querySelector(headerClass).innerHTML
+  ); // Getting the header to be able to change the header from settings
+  extendInfo.innerHTML = ""; // To reset the contents of the div on each
+  const className = olClass; // The class that acts like an id
+
   const clone = el.cloneNode(true); // Aparently if you don't clone the element, the original one moves. (nodes are unique)
   // to burrow through and remove the further info class from the li's child elements
   const liArr = Array.from(clone.children);
@@ -300,14 +337,4 @@ function areTheSame(origLi, liDesc) {
   } else {
     return false;
   }
-}
-
-// To configure the extendInfo div
-function extendConfig(headerClass, olClass) {
-  const header = document.createTextNode(
-    document.querySelector(headerClass).innerHTML
-  );
-  extendInfo.innerHTML = ""; // To reset the contents of the div on each
-  const className = olClass;
-  createExtendInfo(extendInfo, topRight, header, className);
 }

@@ -39,19 +39,6 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
-  mainWindow.webContents.on("before-input-event", (event, input) => {
-    // console.log(input.key);
-    // console.log(input);
-    if (
-      input.control &&
-      input.key.toLowerCase() === "arrowup" &&
-      input.key.toLowerCase() === "arrowleft"
-    ) {
-      console.log("Pressed Control+I");
-      event.preventDefault();
-    }
-  });
-
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -116,28 +103,24 @@ const template = [
     submenu: [
       {
         label: `Top Left Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
-        accelerator: "CmdOrCtrl+Up+Left", // Find out what the arrow keys are represented with
         click: () => {
           mainWindow.webContents.send("extend-tl");
         },
       },
       {
         label: `Top Right Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
-        accelerator: "CmdOrCtrl+Up+Right", // Find out what the arrow keys are represented with
         click: () => {
           mainWindow.webContents.send("extend-tr");
         },
       },
       {
         label: `Bottom Left Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
-        accelerator: "CmdOrCtrl+Down+Left", // Find out what the arrow keys are represented with
         click: () => {
           mainWindow.webContents.send("extend-bl");
         },
       },
       {
         label: `Bottom Right Q`, // Eventually this would reflect the quadrants name gotten from the html/settings
-        accelerator: "CmdOrCtrl+Down+Right", // Find out what the arrow keys are represented with
         click: () => {
           mainWindow.webContents.send("extend-br");
         },
