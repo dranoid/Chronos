@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline'; script-src 'self' "
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline'; script-src 'self' "
+    />
+    <title>Settings</title>
+    <link rel="stylesheet" href="css/materialize.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Settings</h2>
+      <div class="br"></div>
+      <!-- to change the name of the 4 quadrants, to change the interval of the cleared list -->
+      <div>
+        <div class="quad-name-change">
+          <h5 class="mar">Quadrant name</h5>
+          <p class="sub-instruction change">Change the name of the quadrants</p>
+          <ol class="collection">
+            <li class="collection-item">
+              <div class="input-field col s8 m8 l8">
+                <input id="tl-Change" type="text" class="validate" />
+                <label for="tl-Change">Top Left quadrant</label>
+              </div>
+            </li>
+
+            <li class="collection-item">
+              <div class="input-field col s8 m8 l8">
+                <input id="tr-Change" type="text" class="validate" />
+                <label for="tr-Change">Top Right quadrant</label>
+              </div>
+            </li>
+
+            <li class="collection-item">
+              <div class="input-field col s8 m8 l8">
+                <input id="bl-Change" type="text" class="validate" />
+                <label for="bl-Change">Bottom Left quadrant</label>
+              </div>
+            </li>
+
+            <li class="collection-item">
+              <div class="input-field col s8 m8 l8">
+                <input id="br-Change" type="text" class="validate" />
+                <label for="br-Change">Bottom Right quadrant</label>
+              </div>
+            </li>
+            <div class="row">
+              <button
+                id="btn-change"
+                class="btn waves-effect waves-light btn-cable-pink col s3 m3 l2 offset-s8 offset-m8 offset-l9"
+                type="submit"
+                name="action"
+              >
+                Change
+                <!-- <i class="material-icons right">send</i> -->
+              </button>
+            </div>
+          </ol>
+        </div>
+        <div class="complete-interval">
+          <h5 class="mar">Set Interval</h5>
+          <p class="sub-instruction interval">
+            Choose how often you want to clear the complete list
+          </p>
+          <div class="bored bot-mar">
+            <div class="row">
+              <div class="input-field col s6 m6 l6">
+                <input id="interval" type="number" class="validate" />
+                <label for="interval">Interval</label>
+              </div>
+              <div class="input-field col s6 m6 l6">
+                <select id="dayWk">
+                  <option value="0" disabled selected>Interval type</option>
+                  <option value="day">Day(s)</option>
+                  <option value="week">Week(s)</option>
+                </select>
+                <label>Priority Level</label>
+              </div>
+            </div>
+            <div class="row">
+              <button
+                id="btn-interval"
+                class="btn waves-effect waves-light btn-cable-pink col s3 m3 l2 offset-s9 offset-m9 offset-l10"
+                type="submit"
+                name="action"
+              >
+                Set
+                <!-- <i class="material-icons right">send</i> -->
+              </button>
+            </div>
+          </div>
+          <!-- <div>
+            <h5 class="mar">App reload</h5>
+            <p class="sub-instruction">
+              The app has to reload for settings to take hold
+            </p>
+            <p class="bot-mar">
+              <label for="restart">
+                <input type="checkbox" id="restart" class="btn-cable-pink" />
+                <span>Should the app restart on saved settings?</span>
+              </label>
+            </p>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./js/settings.js"></script>
+  <script src="./js/materialize.min.js"></script>
+</html>

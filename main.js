@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const path = require("path");
+const Store = require("./Store.js");
 
 // Set environment
 process.env.NODE_ENV = "development";
@@ -9,14 +10,33 @@ const isDev = process.env.NODE_ENV == "development" ? true : false;
 const isMac = process.platform === "darwin" ? true : false;
 const isWin = process.platform === "win32" ? true : false;
 
-let mainWindow;
+let mainWindow; // Check how to prevent the object from being destroyed
+let settingsWindow; // This should be globally defined to prevent garbage collection
+
+// init store and defaults
+
+const store = new Store({
+  configName: "user-settings",
+  defaults: {
+    settings: {
+      quadName: {
+        tl: "Important and Urgent",
+        tr: "Unimportant and Urgent",
+        bl: "Important and Not Urgent",
+        br: "Unimportant and Not Urgent",
+      },
+      interval: 1,
+      reload: false,
+    },
+  },
+});
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     title: "Chronos",
-    width: 800,
-    height: 600,
-    resizable: isDev ? true : false,
+    width: 1000,
+    height: 700,
     backgroundColor: "white",
     webPreferences: {
       //preload: path.join(__dirname, "preload.js"),
@@ -38,6 +58,15 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+
+  const settings = store.get("settings");
+  mainWindow.webContents.on("dom-ready", () => {
+    mainWindow.webContents.send("settings-get", settings); //mainWindow since its the one that will use the settings
+  });
+
+  //this is where the changing menu should take place!!!
+
+  changeMenu(settings);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -84,6 +113,45 @@ function createInfoWindow() {
   }
 }
 
+function createSettingsWindow() {
+  if (!settingsWindow || settingsWindow == null) {
+    // this came from stackoverflow, go to js.info to re-understand that ! thingy on !settingsWindow
+    settingsWindow = new BrowserWindow({
+      title: "Chronos",
+      width: 500,
+      height: 450,
+      resizable: isDev ? true : false,
+      backgroundColor: "white",
+      modal: true,
+      parent: mainWindow,
+      webPreferences: {
+        //preload: path.join(__dirname, "preload.js"),
+        nodeIntegration: true,
+      },
+    });
+
+    // and load the index.html of the app.
+    settingsWindow.loadFile("app/settings.html");
+
+    // Open the DevTools.
+    if (isDev) {
+      settingsWindow.webContents.openDevTools();
+    }
+
+    settingsWindow.setMenuBarVisibility(false);
+    settingsWindow.setAutoHideMenuBar(false);
+  } else {
+    settingsWindow.focus();
+  }
+  settingsWindow.on("close", () => {
+    // to specify how its going to be destroyed
+    settingsWindow = null;
+  });
+  settingsWindow.webContents.on("dom-ready", () => {
+    settingsWindow.webContents.send("settings-get", store.get("settings"));
+  });
+}
+
 ipcMain.on("ol-clicked", (e, ol) => {
   console.log("I'm here in the main process", ol);
   createInfoWindow();
@@ -93,9 +161,33 @@ ipcMain.on("ol-clicked", (e, ol) => {
   });
 });
 
-ipcMain.on("add-tasks", (e, data) => {
-  console.log(data);
+// Settings area
+ipcMain.on("settings-quadName", (e, quadNames) => {
+  const settings = store.get("settings");
+  settings.quadName = quadNames;
+  store.set("settings", settings);
+  mainWindow.webContents.send("settings-get", store.get("settings"));
+  changeMenu(settings);
 });
+ipcMain.on("settings-interval", (e, intervalObj) => {
+  if (intervalObj.dayWk == week) {
+    intervalObj.interval = intervalObj.interval * 7; // to convert it to days
+  }
+  const settings = store.get("settings");
+  settings.interval = intervalObj.interval;
+  store.set("settings", settings);
+  mainWindow.webContents.send("settings-get", store.get("settings"));
+});
+
+ipcMain.on("settings-send",(e)=>{
+  e.sender.send('settings-get-change',store.get('settings'))
+})
+// ipcMain.on("settings-reload", (e, reload) => { // apparently you can do it without reloading the app
+//   // console.log(data);
+// });
+
+// template[1].submenu[0].label = "Tested"; // Try putting it in a function and then building the enire menu again from
+// the new template
 const template = [
   { role: "editMenu" },
   {
@@ -128,14 +220,54 @@ const template = [
       { type: "separator" },
       {
         label: "Settings",
-        accelerator: "CmdOrCtrl+K",
-        click: () => {
-          console.log("Settings");
-        },
+        submenu: [
+          {
+            label: "Settings",
+            accelerator: "CmdOrCtrl+K",
+            click: () => {
+              createSettingsWindow();
+            },
+          },
+          {
+            label: "Restore defaults",
+            click: () => {
+              store.set("settings", {
+                quadName: {
+                  tl: "Important and Urgent",
+                  tr: "Unimportant and Urgent",
+                  bl: "Important and Not Urgent",
+                  br: "Unmportant and Not Urgent",
+                },
+                interval: 1,
+                reload: false,
+              });
+              mainWindow.webContents.send(
+                "settings-get",
+                store.get("settings")
+              );
+            },
+          },
+        ],
       },
     ],
   },
   ...(isDev ? [{ role: "viewMenu" }] : []),
 ];
-const menu = Menu.buildFromTemplate(template);
+let menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
+
+function changeMenu(settings) {
+  template[1].submenu[0].label = settings.quadName.tl;
+  template[1].submenu[1].label = settings.quadName.tr;
+  template[1].submenu[2].label = settings.quadName.bl;
+  template[1].submenu[3].label = settings.quadName.br;
+  menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}
+
+// console.log(template[1].submenu[0].label);
+
+//  template[1].submenu[0].label = "Tested";
+//  menu = Menu.buildFromTemplate(template);
+//  Menu.setApplicationMenu(menu);
+// Apparently this works but, isn't it tasking on the UI/Backend?

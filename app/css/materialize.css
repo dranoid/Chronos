@@ -3,6 +3,9 @@
  * Copyright 2014-2017 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
+#btn-change {
+  padding-left: 1%;
+}
 .materialize-red {
   background-color: #e51c23 !important;
 }
@@ -7058,7 +7061,7 @@ textarea.materialize-textarea {
   width: 18px;
   height: 18px;
   z-index: 0;
-  border: 2px solid #5a5a5a;
+  border: 2px solid #312c51;
   border-radius: 1px;
   margin-top: 3px;
   -webkit-transition: 0.2s;
@@ -7093,8 +7096,8 @@ textarea.materialize-textarea {
   height: 22px;
   border-top: 2px solid transparent;
   border-left: 2px solid transparent;
-  border-right: 2px solid #26a69a;
-  border-bottom: 2px solid #26a69a;
+  border-right: 2px solid #f1aa9b;
+  border-bottom: 2px solid #f1aa9b;
   -webkit-transform: rotate(40deg);
   transform: rotate(40deg);
   -webkit-backface-visibility: hidden;

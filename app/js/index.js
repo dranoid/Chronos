@@ -240,6 +240,42 @@ ipcRenderer.on("extend-br", (eve) => {
   createExtendInfo(extendInfo, botRight, headerClass, olClass);
 });
 
+const tlHeader = document.querySelector(".top-left h5");
+const trHeader = document.querySelector(".top-right h5");
+const blHeader = document.querySelector(".bottom-left h5");
+const brHeader = document.querySelector(".bottom-right h5");
+const intervalT = document.querySelector(".sub-instruction.intervalT");
+
+// get settings
+ipcRenderer.on("settings-get", (e, settings) => {
+  tlHeader.innerHTML = settings.quadName.tl;
+  trHeader.innerHTML = settings.quadName.tr;
+  blHeader.innerHTML = settings.quadName.bl;
+  brHeader.innerHTML = settings.quadName.br;
+
+  console.log("Settings gotten");
+
+  const intervalTime = settings.interval;
+  if (intervalTime % 7 == 0) {
+    if (intervalTime / 7 > 1) {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
+        intervalTime / 7
+      } weeks`;
+    } else {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
+        intervalTime / 7
+      } week`;
+    }
+  } else {
+    if (intervalTime > 1) {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} days`;
+    } else {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} day`;
+    }
+  }
+});
+
+// Functions
 function createLiNode(ol, newLi, taskTxt, descTxt, date) {
   newLi.appendChild(taskTxt);
   const taskDiv = document.createElement("div");

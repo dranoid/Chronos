@@ -176,4 +176,17 @@ ul.collection.shad {
   font-size: 13px;
   margin-bottom: 0;
 }
+div.br {
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--secondaryTextColor);
+  height: 1px;
+  width: 100%;
+}
+.mar {
+  margin-top: 4%;
+}
+.bot-mar {
+  margin-bottom: 5%;
+}
 /* jonfvkjnfvkjebfrvhbcnvjndsfvsdbnvdsjvkjdsnvslkjdvnlkndm kjdfngvjndkmvnfgvjngdkjgnvkjnkdjnfgviunkjdfnvkjndfvpiesdvnjdfsijbgdkjvnkjsnvijnjuhnjjbjhbhj n */
