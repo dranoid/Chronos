@@ -248,31 +248,16 @@ const intervalT = document.querySelector(".sub-instruction.intervalT");
 
 // get settings
 ipcRenderer.on("settings-get", (e, settings) => {
-  tlHeader.innerHTML = settings.quadName.tl;
-  trHeader.innerHTML = settings.quadName.tr;
-  blHeader.innerHTML = settings.quadName.bl;
-  brHeader.innerHTML = settings.quadName.br;
+  setSettings(settings);
+});
 
-  console.log("Settings gotten");
+// saving the quadrants
+ipcRenderer.on("save-get-quadObj", (e) => {
+  ipcRenderer.send("save-set-quadObj", saveQuadrant());
+});
 
-  const intervalTime = settings.interval;
-  if (intervalTime % 7 == 0) {
-    if (intervalTime / 7 > 1) {
-      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
-        intervalTime / 7
-      } weeks`;
-    } else {
-      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
-        intervalTime / 7
-      } week`;
-    }
-  } else {
-    if (intervalTime > 1) {
-      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} days`;
-    } else {
-      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} day`;
-    }
-  }
+ipcRenderer.on("load-set-quadObj", (e, quadObj) => {
+  loadQuadrants(JSON.parse(quadObj));
 });
 
 // Functions
@@ -373,4 +358,203 @@ function areTheSame(origLi, liDesc) {
   } else {
     return false;
   }
+}
+
+function setSettings(settings) {
+  tlHeader.innerHTML = settings.quadName.tl;
+  trHeader.innerHTML = settings.quadName.tr;
+  blHeader.innerHTML = settings.quadName.bl;
+  brHeader.innerHTML = settings.quadName.br;
+
+  console.log("Settings gotten");
+
+  const intervalTime = settings.interval;
+  if (intervalTime % 7 == 0) {
+    if (intervalTime / 7 > 1) {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
+        intervalTime / 7
+      } weeks`;
+    } else {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${
+        intervalTime / 7
+      } week`;
+    }
+  } else {
+    if (intervalTime > 1) {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} days`;
+    } else {
+      intervalT.innerHTML = `These tasks are cleared on a specified interval. Currently every ${intervalTime} day`;
+    }
+  }
+}
+
+function getTask(listEl) {
+  let taskObj = {
+    task: "",
+    description: "",
+    time: "",
+  };
+  const taskArr = [];
+  if (listEl.children.length > 0) {
+    const elArr = Array.from(listEl.children);
+    for (let i = 0; i < elArr.length; i++) {
+      taskObj = {
+        task: "",
+        description: "",
+        time: "",
+      };
+      if (elArr[i].children) {
+        const childArr = Array.from(elArr[i].children);
+        for (let j = 0; j < childArr.length; j++) {
+          if (childArr[j].classList.contains("time")) {
+            taskObj["time"] = childArr[j].innerText.trim();
+          } else if (childArr[j].classList.contains("desc-text")) {
+            taskObj["description"] = childArr[j].innerText.trim();
+          }
+        }
+      }
+      taskObj["task"] = elArr[i].childNodes[0].nodeValue.trim();
+      taskArr.push(taskObj);
+    }
+  }
+  console.log(taskArr);
+  return taskArr;
+}
+
+function saveQuadrant() {
+  const quadObj = {};
+  // header is in settings
+
+  quadObj["tl"] = getTask(topLeft);
+
+  quadObj["tr"] = getTask(topRight);
+
+  quadObj["bl"] = getTask(botLeft);
+
+  quadObj["br"] = getTask(botRight);
+
+  quadObj["complete"] = getTask(completeTask);
+
+  return quadObj;
+}
+
+function loadQuadrants(quadObj) {
+  console.log(quadObj);
+  const tlTaskArr = quadObj.tl;
+  const trTaskArr = quadObj.tr;
+  const blTaskArr = quadObj.bl;
+  const brTaskArr = quadObj.br;
+  const comTaskArr = quadObj.complete;
+  setSettings(quadObj.settings);
+
+  // const taskTxt = document.createTextNode(taskObj.task);
+  // const descTxt = document.createTextNode(taskObj.taskDesc);
+  // const date = document.createTextNode(taskObj.date);
+
+  while (topLeft.firstChild) {
+    topLeft.removeChild(topLeft.lastChild);
+  }
+  while (topRight.firstChild) {
+    topRight.removeChild(topRight.lastChild);
+  }
+  while (botLeft.firstChild) {
+    botLeft.removeChild(botLeft.lastChild);
+  }
+  while (botRight.firstChild) {
+    botRight.removeChild(botRight.lastChild);
+  }
+  while (completeTask.firstChild) {
+    completeTask.removeChild(completeTask.lastChild);
+  }
+
+  for (let i = 0; i < tlTaskArr.length; i++) {
+    const newLi = document.createElement("li");
+    const taskTxt = document.createTextNode(tlTaskArr[i].task);
+    const descTxt = document.createTextNode(tlTaskArr[i].description);
+    const date = document.createTextNode(tlTaskArr[i].time);
+    createLiNode(topLeft, newLi, taskTxt, descTxt, date);
+  }
+
+  for (let i = 0; i < trTaskArr.length; i++) {
+    const newLi = document.createElement("li");
+    const taskTxt = document.createTextNode(trTaskArr[i].task);
+    const descTxt = document.createTextNode(trTaskArr[i].description);
+    const date = document.createTextNode(trTaskArr[i].time);
+    createLiNode(topRight, newLi, taskTxt, descTxt, date);
+  }
+
+  for (let i = 0; i < blTaskArr.length; i++) {
+    const newLi = document.createElement("li");
+    const taskTxt = document.createTextNode(blTaskArr[i].task);
+    const descTxt = document.createTextNode(blTaskArr[i].description);
+    const date = document.createTextNode(blTaskArr[i].time);
+    createLiNode(botLeft, newLi, taskTxt, descTxt, date);
+  }
+
+  for (let i = 0; i < brTaskArr.length; i++) {
+    const newLi = document.createElement("li");
+    const taskTxt = document.createTextNode(brTaskArr[i].task);
+    const descTxt = document.createTextNode(brTaskArr[i].description);
+    const date = document.createTextNode(brTaskArr[i].time);
+    createLiNode(botRight, newLi, taskTxt, descTxt, date);
+  }
+
+  for (let i = 0; i < comTaskArr.length; i++) {
+    const newLi = document.createElement("li");
+    const taskTxt = document.createTextNode(comTaskArr[i].task);
+    const descTxt = document.createTextNode(comTaskArr[i].description);
+    const date = document.createTextNode(comTaskArr[i].time);
+    loadComplete(completeTask, newLi, taskTxt, descTxt, date);
+  }
+
+  // createLiNode(topLeft, newLi, taskTxt, descTxt, date);
+  if (topLeft.classList.contains("further-info")) {
+    topLeft.classList.remove("further-info");
+  }
+  if (topRight.classList.contains("further-info")) {
+    topRight.classList.remove("further-info");
+  }
+  if (botLeft.classList.contains("further-info")) {
+    botLeft.classList.remove("further-info");
+  }
+  if (botRight.classList.contains("further-info")) {
+    botRight.classList.remove("further-info");
+  }
+}
+
+function loadComplete(completeTask, newLi, taskTxt, descTxt, date) {
+  newLi.appendChild(taskTxt);
+  const taskDiv = document.createElement("div");
+  taskDiv.appendChild(descTxt);
+  taskDiv.classList.add("further-info");
+  taskDiv.classList.add("desc-text");
+  const dateSpan = document.createElement("span");
+  dateSpan.appendChild(date);
+  dateSpan.classList.add("further-info");
+  dateSpan.classList.add("time");
+  newLi.appendChild(taskDiv);
+  newLi.appendChild(dateSpan);
+  newLi.classList.add("collection-item");
+
+  // display only task and time
+  // const liAdopt = document.adoptNode(task);
+  const elArr = Array.from(newLi.children);
+  for (let j = 0; j < elArr.length; j++) {
+    if (!elArr[j].classList.contains("time")) {
+      elArr[j].classList.add("further-info");
+    }
+  }
+  const btnSpan = document.createElement("span");
+  const x = document.createTextNode("X");
+  btnSpan.appendChild(x);
+  btnSpan.classList.add(
+    "badge",
+    "btn-cable-pink",
+    "white-text",
+    "waves-effect",
+    "waves-light"
+  );
+  newLi.appendChild(btnSpan);
+  completeTask.appendChild(newLi);
+  completeTask.classList.remove("further-info");
 }

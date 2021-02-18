@@ -30,15 +30,34 @@ btnChange.addEventListener("click", (e) => {
   // console.log(tlChange)
 
   // Validating the form
-  if (
-    newQuadName.tl == "" ||
-    newQuadName.tr == "" ||
-    newQuadName.bl == "" ||
-    newQuadName.br == ""
-  ) {
-    document.querySelector(".sub-instruction.change").innerHTML =
-      "Fill in the required input";
-    document.querySelector(".sub-instruction.change").classList.add("caution");
+  // if (
+  //   newQuadName.tl == "" ||
+  //   newQuadName.tr == "" ||
+  //   newQuadName.bl == "" ||
+  //   newQuadName.br == ""
+  // ) {
+  //   blChange.click();
+  //   blChange.focus();
+  //   document.querySelector(".sub-instruction.change").innerHTML =
+  //     "Fill in the required input";
+  //   document.querySelector(".sub-instruction.change").classList.add("caution");
+  //   return;
+  // }
+  if (newQuadName.tl == "") {
+    tlChange.click();
+    tlChange.focus();
+    return;
+  } else if (newQuadName.tr == "") {
+    trChange.click();
+    trChange.focus();
+    return;
+  } else if (newQuadName.bl == "") {
+    blChange.click();
+    blChange.focus();
+    return;
+  } else if (newQuadName.br == "") {
+    brChange.click();
+    brChange.focus();
     return;
   }
 
@@ -51,7 +70,7 @@ btnChange.addEventListener("click", (e) => {
 
   ipcRenderer.send("settings-quadName", newQuadName);
 
-  tlChange.focus();
+  // tlChange.focus();
 });
 
 const btnInterval = document.getElementById("btn-interval");
@@ -101,33 +120,41 @@ btnInterval.addEventListener("click", (e) => {
 // cos of materialize, this is the validation
 tlChange.addEventListener("click", (e) => {
   if (tlChange.value == "") {
-    ipcRenderer.send("settings-send");
-    ipcRenderer.on("settings-get-change", (e, settings) => {
+    ipcRenderer.send("settings-send-tl");
+    ipcRenderer.on("settings-get-change-tl", (e, settings) => {
       tlChange.value = settings.quadName.tl;
     });
   }
 });
 trChange.addEventListener("click", (e) => {
   if (trChange.value == "") {
-    ipcRenderer.send("settings-send");
-    ipcRenderer.on("settings-get-change", (e, settings) => {
+    ipcRenderer.send("settings-send-tr");
+    ipcRenderer.on("settings-get-change-tr", (e, settings) => {
       trChange.value = settings.quadName.tr;
     });
   }
 });
 blChange.addEventListener("click", (e) => {
   if (blChange.value == "") {
-    ipcRenderer.send("settings-send");
-    ipcRenderer.on("settings-get-change", (e, settings) => {
+    ipcRenderer.send("settings-send-bl");
+    ipcRenderer.on("settings-get-change-bl", (e, settings) => {
       blChange.value = settings.quadName.bl;
+    });
+  }
+});
+brChange.addEventListener("click", (e) => {
+  if (brChange.value == "") {
+    ipcRenderer.send("settings-send-br");
+    ipcRenderer.on("settings-get-change-br", (e, settings) => {
+      brChange.value = settings.quadName.bl;
     });
   }
 });
 
 interval.addEventListener("click", (e) => {
   if (interval.value == "" && dayWk.value == 0) {
-    ipcRenderer.send("settings-send");
-    ipcRenderer.on("settings-get-change", (e, settings) => {
+    ipcRenderer.send("settings-send-int");
+    ipcRenderer.on("settings-get-change-int", (e, settings) => {
       const intervalTime = settings.interval;
       if (intervalTime % 7 == 0) {
         if (intervalTime / 7 > 1) {

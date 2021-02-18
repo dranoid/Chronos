@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require("electron");
 const path = require("path");
+const fs = require("fs");
 const Store = require("./Store.js");
 
 // Set environment
@@ -34,10 +35,10 @@ const store = new Store({
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    title: "Chronos",
+    title: "Quadra",
     width: 1000,
     height: 700,
-    backgroundColor: "white",
+    backgroundColor: "#48426d",
     webPreferences: {
       //preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -65,8 +66,11 @@ app.whenReady().then(() => {
   });
 
   //this is where the changing menu should take place!!!
-
   changeMenu(settings);
+
+  // app.on("ready", (e) => {
+  //   changeMenu(settings);
+  // });
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -93,7 +97,7 @@ let infoWindow;
 function createInfoWindow() {
   // Create the browser window.
   infoWindow = new BrowserWindow({
-    title: "Chronos",
+    title: "Quadra",
     width: 500,
     height: 300,
     resizable: isDev ? true : false,
@@ -117,11 +121,10 @@ function createSettingsWindow() {
   if (!settingsWindow || settingsWindow == null) {
     // this came from stackoverflow, go to js.info to re-understand that ! thingy on !settingsWindow
     settingsWindow = new BrowserWindow({
-      title: "Chronos",
+      title: "Quadra",
       width: 500,
       height: 450,
-      resizable: isDev ? true : false,
-      backgroundColor: "white",
+      backgroundColor: "#48426d",
       modal: true,
       parent: mainWindow,
       webPreferences: {
@@ -179,9 +182,25 @@ ipcMain.on("settings-interval", (e, intervalObj) => {
   mainWindow.webContents.send("settings-get", store.get("settings"));
 });
 
-ipcMain.on("settings-send",(e)=>{
-  e.sender.send('settings-get-change',store.get('settings'))
-})
+ipcMain.on("settings-send-tl", (e) => {
+  e.sender.send("settings-get-change-tl", store.get("settings"));
+});
+ipcMain.on("settings-send-tr", (e) => {
+  e.sender.send("settings-get-change-tr", store.get("settings"));
+});
+ipcMain.on("settings-send-bl", (e) => {
+  e.sender.send("settings-get-change-bl", store.get("settings"));
+});
+ipcMain.on("settings-send-br", (e) => {
+  e.sender.send("settings-get-change-br", store.get("settings"));
+});
+ipcMain.on("settings-send-int", (e) => {
+  e.sender.send("settings-get-change-int", store.get("settings"));
+});
+ipcMain.on("settings-get-save", (e) => {
+  e.sender.send("settings-set-save", store.get("settings"));
+});
+
 // ipcMain.on("settings-reload", (e, reload) => { // apparently you can do it without reloading the app
 //   // console.log(data);
 // });
@@ -189,6 +208,80 @@ ipcMain.on("settings-send",(e)=>{
 // template[1].submenu[0].label = "Tested"; // Try putting it in a function and then building the enire menu again from
 // the new template
 const template = [
+  {
+    label: "File",
+    submenu: [
+      {
+        label: "Load Quadrant",
+        accelerator: "CmdOrCtrl+Shift+O",
+        click: () => {
+          console.log("Open Dialog");
+          dialog
+            .showOpenDialog(mainWindow, openOptions)
+            .then((result) => {
+              console.log(result.filePaths[0] + "");
+              if (result === undefined) {
+                console.log("No file selected");
+                return;
+              }
+              fs.readFile(result.filePaths[0], "utf8", (err, data) => {
+                if (err) throw err;
+                console.log("File popped");
+                // console.log(data);
+                const quadObj = JSON.parse(data);
+                store.set("settings", quadObj.settings);
+                mainWindow.webContents.send("load-set-quadObj", data);
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        },
+      },
+      {
+        label: "Save Quadrant",
+        accelerator: "CmdOrCtrl+Shift+S",
+        click: () => {
+          console.log("Save Dialog");
+
+          mainWindow.webContents.send("save-get-quadObj");
+          ipcMain.on("save-set-quadObj", (e, quadObj) => {
+            quadObj["settings"] = store.get("settings");
+            dialog
+              .showSaveDialog(mainWindow, saveOptions)
+              .then((result) => {
+                if (result === undefined) {
+                  console.log("It didnt save");
+                  return;
+                }
+                console.log(result.filePath);
+
+                fs.writeFile(
+                  result.filePath + "",
+                  JSON.stringify(quadObj),
+                  (err) => {
+                    if (err) throw err;
+                    console.log("Quadrant successfully saved...");
+                  }
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          });
+        },
+      },
+      {
+        type: "separator",
+      },
+      {
+        label: "Exit",
+        click: () => {
+          app.quit();
+        },
+      },
+    ],
+  },
   { role: "editMenu" },
   {
     label: "Actions",
@@ -251,18 +344,40 @@ const template = [
       },
     ],
   },
+  {
+    label: "About",
+    submenu: [
+      {
+        label: "About Quadra",
+        click: () => {
+          //The About page goes here
+        },
+      },
+      {
+        label: "Contact Developer",
+        click: () => {
+          // My details page goes here
+        },
+      },
+    ],
+  },
   ...(isDev ? [{ role: "viewMenu" }] : []),
 ];
 let menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
 function changeMenu(settings) {
-  template[1].submenu[0].label = settings.quadName.tl;
-  template[1].submenu[1].label = settings.quadName.tr;
-  template[1].submenu[2].label = settings.quadName.bl;
-  template[1].submenu[3].label = settings.quadName.br;
-  menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
+  try {
+    template[2].submenu[0].label = settings.quadName.tl;
+    template[2].submenu[1].label = settings.quadName.tr;
+    template[2].submenu[2].label = settings.quadName.bl;
+    template[2].submenu[3].label = settings.quadName.br;
+    menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+    console.log("menu updated");
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // console.log(template[1].submenu[0].label);
@@ -271,3 +386,17 @@ function changeMenu(settings) {
 //  menu = Menu.buildFromTemplate(template);
 //  Menu.setApplicationMenu(menu);
 // Apparently this works but, isn't it tasking on the UI/Backend?
+
+const saveOptions = {
+  title: "Save quadrant",
+  buttonLabel: "Save",
+  filters: [{ name: "Quadrant", extensions: ["qdr"] }],
+  properties: ["dontAddToRecent", "showHiddenFiles"],
+};
+
+const openOptions = {
+  title: "Load quadrant",
+  buttonLabel: "Load",
+  filters: [{ name: "Quadrant", extensions: ["qdr"] }],
+  properties: ["openFile", "showHiddenFiles"],
+};

@@ -1,4 +1,4 @@
-# Chronos
+# Quadra
 
 This is an Electron application that helps you in prioritizing your time by dividing your tasks into quadrants.
 
@@ -8,9 +8,9 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [Nod
 
 ```bash
 # Clone this repository
-git clone https://github.com/dranoid/Chronos
+git clone https://github.com/dranoid/Quadra.git
 # Go into the repository
-cd chronos
+cd quadra
 # Install dependencies
 npm install
 # Run the app
