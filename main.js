@@ -210,7 +210,8 @@ ipcMain.on("check-interval", (e, taskArr) => {
 
   if (taskArr) {
     for (let i = 0; i < taskArr.length; i++) {
-      let dateNow = moment(moment().format("DD-MMM-YYYY HH:mm:SS"));
+      let datePick = moment().format("DD-MMM-YYYY HH:mm:SS") + "";
+      let dateNow = moment(datePick);
       let time = settings.interval;
       let dateThen = moment(taskArr[i].time);
       // console.log(dateNow.diff(dateThen, "days"));

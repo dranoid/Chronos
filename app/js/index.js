@@ -28,11 +28,11 @@ document.addEventListener("mousemove", (e) => {
 });
 
 const btnAdd = document.getElementById("btn-add");
+const prioLevel = document.getElementById("priority");
 btnAdd.addEventListener("click", (e) => {
   // e.preventDefault();
   let date = moment().format("DD-MMM-YYYY HH:mm:SS");
   const taskDesc = document.getElementById("task-desc");
-  const prioLevel = document.getElementById("priority");
   const task = document.getElementById("task");
   const taskObj = {
     priority: prioLevel.value,
@@ -76,6 +76,12 @@ const topLeft = document.querySelector(".IUList");
 const topRight = document.querySelector(".NIUList");
 const botLeft = document.querySelector(".INUList");
 const botRight = document.querySelector(".NINUList");
+
+// list of options of the priority select
+const optTl = document.getElementById("optTl");
+const optTr = document.getElementById("optTr");
+const optBl = document.getElementById("optBl");
+const optBr = document.getElementById("optBr");
 
 // Called in the btnAdd eventListener
 function addToQuadrant(taskObj) {
@@ -277,10 +283,6 @@ ipcRenderer.on("already-complete", (e, exitArr) => {
         }
       }
     }
-
-    // console.log(i);
-    // console.log(completeTask.children[exitArr[i].index]);
-    // completeTask.removeChild(completeTask.children[exitArr[i].index]);
   }
 });
 
@@ -394,6 +396,14 @@ function setSettings(settings) {
   trHeader.innerHTML = settings.quadName.tr;
   blHeader.innerHTML = settings.quadName.bl;
   brHeader.innerHTML = settings.quadName.br;
+
+  optTl.innerHTML = settings.quadName.tl;
+  optTr.innerHTML = settings.quadName.tr;
+  optBl.innerHTML = settings.quadName.bl;
+  optBr.innerHTML = settings.quadName.br;
+  // to change anything in the select, you'd have to reinitialize it. makes me curious if that's why the changing the value/selected index doesnt work
+  var elems = document.querySelectorAll("select");
+  var instances = M.FormSelect.init(elems);
 
   console.log("Settings gotten");
 
