@@ -103,12 +103,18 @@
                 <div class="input-field col s4 m4 l4">
                   <select id="priority">
                     <option value="0" disabled selected>Select priority</option>
-                    <option value="IU">Important and Urgent</option>
-                    <option value="NIU">Unimportant and Urgent</option>
-                    <option value="INU">Important and Not Urgent</option>
-                    <option value="NINU">Unimportant and Not Urgent</option>
+                    <option id="optTl" value="IU">Important and Urgent</option>
+                    <option id="optTr" value="NIU">
+                      Unimportant and Urgent
+                    </option>
+                    <option id="optBl" value="INU">
+                      Important and Not Urgent
+                    </option>
+                    <option id="optBr" value="NINU">
+                      Unimportant and Not Urgent
+                    </option>
                   </select>
-                  <label>Priority Level</label>
+                  <label for="priority">Priority Level</label>
                 </div>
               </div>
               <div class="row">

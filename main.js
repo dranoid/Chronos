@@ -3,6 +3,8 @@ const { app, BrowserWindow, ipcMain, Menu, dialog } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const Store = require("./Store.js");
+const moment = require("moment");
+const { markTimeline } = require("console");
 
 // Set environment
 process.env.NODE_ENV = "development";
@@ -199,6 +201,28 @@ ipcMain.on("settings-send-int", (e) => {
 });
 ipcMain.on("settings-get-save", (e) => {
   e.sender.send("settings-set-save", store.get("settings"));
+});
+
+ipcMain.on("check-interval", (e, taskArr) => {
+  const settings = store.get("settings");
+  const exitArr = [];
+  // const exitObj={}
+
+  if (taskArr) {
+    for (let i = 0; i < taskArr.length; i++) {
+      let dateNow = moment(moment().format("DD-MMM-YYYY HH:mm:SS"));
+      let time = settings.interval;
+      let dateThen = moment(taskArr[i].time);
+      // console.log(dateNow.diff(dateThen, "days"));
+      if (dateNow.diff(dateThen, "days") > time) {
+        taskArr[i].index = i;
+        exitArr.push(taskArr[i]);
+      }
+    }
+  }
+
+  // console.log(exitArr);
+  mainWindow.webContents.send("already-complete", exitArr);
 });
 
 // ipcMain.on("settings-reload", (e, reload) => { // apparently you can do it without reloading the app

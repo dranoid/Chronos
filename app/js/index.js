@@ -260,6 +260,35 @@ ipcRenderer.on("load-set-quadObj", (e, quadObj) => {
   loadQuadrants(JSON.parse(quadObj));
 });
 
+ipcRenderer.on("already-complete", (e, exitArr) => {
+  for (let i = 0; i < exitArr.length; i++) {
+    // find a better way to compare, indexes are fucking it up
+
+    const liArr = Array.from(completeTask.children);
+    for (let j = 0; j < liArr.length; j++) {
+      const liChildArr = Array.from(liArr[j].children);
+
+      for (let k = 0; k < liChildArr.length; k++) {
+        if (
+          liChildArr[k].classList.contains("time") &&
+          liChildArr[k].innerText == exitArr[i].time
+        ) {
+          completeTask.removeChild(completeTask.children[j]);
+        }
+      }
+    }
+
+    // console.log(i);
+    // console.log(completeTask.children[exitArr[i].index]);
+    // completeTask.removeChild(completeTask.children[exitArr[i].index]);
+  }
+});
+
+// Complete interval part
+setInterval(function () {
+  ipcRenderer.send("check-interval", getTask(completeTask));
+}, 60000);
+
 // Functions
 function createLiNode(ol, newLi, taskTxt, descTxt, date) {
   newLi.appendChild(taskTxt);
