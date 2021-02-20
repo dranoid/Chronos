@@ -325,6 +325,7 @@ function createExtendInfo(extendInfo, el, headerClass, olClass) {
     }
   }
   clone.classList.add(className);
+  clone.classList.add("scrollable");
   const h5 = document.createElement("H5"); // The plan is to eventually be able to dynamically change the header
   h5.appendChild(header);
   extendInfo.appendChild(h5);

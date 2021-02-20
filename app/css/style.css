@@ -60,15 +60,12 @@ tr {
 }
 td {
   width: 50%;
+  max-width: 200px;
+
   vertical-align: top;
   padding-left: 1em;
+  overflow: auto;
 }
-
-/* not working */
-/* h5 {
-  margin: none;
-  padding-top: none;
-} */
 
 div.row.quad-row {
   margin: 0;
@@ -146,6 +143,7 @@ ul.collection.shad {
 }
 
 .extend-info ol {
+  height: 250px;
   overflow-y: scroll;
 }
 
@@ -190,3 +188,48 @@ div.br {
   margin-bottom: 5%;
 }
 /* jonfvkjnfvkjebfrvhbcnvjndsfvsdbnvdsjvkjdsnvslkjdvnlkndm kjdfngvjndkmvnfgvjngdkjgnvkjnkdjnfgviunkjdfnvkjndfvpiesdvnjdfsijbgdkjvnkjsnvijnjuhnjjbjhbhj n */
+
+::selection {
+  background-color: #e6c2bb;
+  color: #2b264d;
+}
+
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #312c51;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #48426d;
+  border-radius: 20px;
+  border: 4px solid #312c51;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #f1aa9b;
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: #48426d;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background: #312c51;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background-color: #48426d;
+  border-radius: 20px;
+  border: 3px solid #312c51;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background-color: #f1aa9b;
+}
