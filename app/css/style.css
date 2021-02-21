@@ -187,6 +187,17 @@ div.br {
 .bot-mar {
   margin-bottom: 5%;
 }
+#contact {
+  display: inline-block;
+  transition: 0.3s;
+  cursor: pointer;
+}
+#contact:hover {
+  margin: 0 10px;
+  text-decoration: underline;
+  transform: scale(1.5, 1.5);
+  color: var(--secondaryTextColor);
+}
 /* jonfvkjnfvkjebfrvhbcnvjndsfvsdbnvdsjvkjdsnvslkjdvnlkndm kjdfngvjndkmvnfgvjngdkjgnvkjnkdjnfgviunkjdfnvkjndfvpiesdvnjdfsijbgdkjvnkjsnvijnjuhnjjbjhbhj n */
 
 ::selection {

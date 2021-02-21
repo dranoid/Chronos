@@ -64,7 +64,7 @@ function createWindow() {
     }
     ipcMain.once("saved-status", (e, saved) => {
       console.log(saved, "this is saved main");
-      if (saved == false || settingSaved == false) {
+      if (saved == false) {
         console.log("not saved");
         dialog
           .showMessageBox(mainWindow, messageOptions)
@@ -128,28 +128,78 @@ app.on("window-all-closed", function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-let infoWindow;
-function createInfoWindow() {
+let aboutWindow;
+function createAboutWindow() {
   // Create the browser window.
-  infoWindow = new BrowserWindow({
-    title: "Quadra",
-    width: 500,
-    height: 300,
-    resizable: isDev ? true : false,
-    backgroundColor: "white",
-    webPreferences: {
-      //preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,
-    },
-  });
+  if (!aboutWindow || aboutWindow == null) {
+    aboutWindow = new BrowserWindow({
+      title: "Quadra",
+      width: 600,
+      height: 500,
+      resizable: isDev ? true : false,
+      backgroundColor: "#48426d",
+      modal: true,
+      parent: mainWindow,
+      webPreferences: {
+        //preload: path.join(__dirname, "preload.js"),
+        nodeIntegration: true,
+      },
+    });
 
-  // and load the index.html of the app.
-  infoWindow.loadFile("app/info.html");
+    // and load the index.html of the app.
+    aboutWindow.loadFile("app/about.html");
 
-  // Open the DevTools.
-  if (isDev) {
-    // infoWindow.webContents.openDevTools();
+    // Open the DevTools.
+    if (isDev) {
+      aboutWindow.webContents.openDevTools();
+    }
+
+    aboutWindow.setMenuBarVisibility(false);
+    aboutWindow.setAutoHideMenuBar(false);
+  } else {
+    aboutWindow.focus();
   }
+  aboutWindow.on("close", () => {
+    // to specify how its going to be destroyed
+    aboutWindow = null;
+  });
+}
+
+let contactWindow;
+function createContactWindow() {
+  // Create the browser window.
+  if (!contactWindow || contactWindow == null) {
+    contactWindow = new BrowserWindow({
+      title: "Quadra",
+      width: 500,
+      height: 350,
+      resizable: isDev ? true : false,
+      backgroundColor: "#48426d",
+      modal: true,
+      parent: mainWindow,
+      webPreferences: {
+        //preload: path.join(__dirname, "preload.js"),
+        nodeIntegration: true,
+      },
+    });
+
+    // and load the index.html of the app.
+    contactWindow.loadFile("app/contact.html");
+
+    // Open the DevTools.
+    if (isDev) {
+      contactWindow.webContents.openDevTools();
+    }
+
+    contactWindow.setMenuBarVisibility(false);
+    contactWindow.setAutoHideMenuBar(false);
+  } else {
+    contactWindow.focus();
+  }
+  contactWindow.on("close", () => {
+    // to specify how its going to be destroyed
+    contactWindow = null;
+  });
 }
 
 function createSettingsWindow() {
@@ -190,13 +240,11 @@ function createSettingsWindow() {
   });
 }
 
-ipcMain.on("ol-clicked", (e, ol) => {
-  console.log("I'm here in the main process", ol);
-  createInfoWindow();
-  infoWindow.webContents.once("dom-ready", () => {
-    // Why you need to add webcontents idk, but the window has to load before it can recieve ipcMessages "win.on('ready-to-show')"" apparently works too.
-    infoWindow.webContents.send("ol-delivery", ol);
-  });
+ipcMain.on("open-contact", (e) => {
+  if (aboutWindow) {
+    aboutWindow.close();
+  }
+  createContactWindow();
 });
 
 // Settings area
@@ -385,12 +433,14 @@ const template = [
         label: "About Quadra",
         click: () => {
           //The About page goes here
+          createAboutWindow();
         },
       },
       {
         label: "Contact Developer",
         click: () => {
           // My details page goes here
+          createContactWindow();
         },
       },
     ],
