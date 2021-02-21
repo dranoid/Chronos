@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const Store = require("./Store.js");
 const moment = require("moment");
-const { markTimeline } = require("console");
+let status = 0;
 
 // Set environment
 process.env.NODE_ENV = "development";
@@ -54,6 +54,43 @@ function createWindow() {
   if (isDev) {
     mainWindow.webContents.openDevTools();
   }
+
+  mainWindow.on("close", (e) => {
+    const pseudoSave = false;
+    if (status == 0) {
+      e.preventDefault();
+      // Save before closing
+      mainWindow.webContents.send("saved-check");
+    }
+    ipcMain.once("saved-status", (e, saved) => {
+      console.log(saved, "this is saved main");
+      if (saved == false || settingSaved == false) {
+        console.log("not saved");
+        dialog
+          .showMessageBox(mainWindow, messageOptions)
+          .then((result) => {
+            if (result.response == 1) {
+              status = 1;
+              app.quit();
+            } else if (result.response == 0) {
+              console.log("Save was clicked");
+              saveQuadrant();
+              console.log("Saved at close");
+            } else if (result.response == 2) {
+              mainWindow.webContents.send("no-save");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        // status = 0;
+      } else if (saved == true) {
+        status = 1;
+        app.quit();
+      }
+    });
+    console.log("closed");
+  });
 }
 
 // This method will be called when Electron has finished
@@ -69,10 +106,6 @@ app.whenReady().then(() => {
 
   //this is where the changing menu should take place!!!
   changeMenu(settings);
-
-  // app.on("ready", (e) => {
-  //   changeMenu(settings);
-  // });
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -269,31 +302,7 @@ const template = [
         click: () => {
           console.log("Save Dialog");
 
-          mainWindow.webContents.send("save-get-quadObj");
-          ipcMain.on("save-set-quadObj", (e, quadObj) => {
-            quadObj["settings"] = store.get("settings");
-            dialog
-              .showSaveDialog(mainWindow, saveOptions)
-              .then((result) => {
-                if (result === undefined) {
-                  console.log("It didnt save");
-                  return;
-                }
-                console.log(result.filePath);
-
-                fs.writeFile(
-                  result.filePath + "",
-                  JSON.stringify(quadObj),
-                  (err) => {
-                    if (err) throw err;
-                    console.log("Quadrant successfully saved...");
-                  }
-                );
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          });
+          saveQuadrant();
         },
       },
       {
@@ -354,7 +363,7 @@ const template = [
                   tl: "Important and Urgent",
                   tr: "Unimportant and Urgent",
                   bl: "Important and Not Urgent",
-                  br: "Unmportant and Not Urgent",
+                  br: "Unimportant and Not Urgent",
                 },
                 interval: 1,
                 reload: false,
@@ -425,3 +434,43 @@ const openOptions = {
   filters: [{ name: "Quadrant", extensions: ["qdr"] }],
   properties: ["openFile", "showHiddenFiles"],
 };
+
+const messageOptions = {
+  title: "Save quadrant?",
+  type: "warning",
+  buttons: ["Save", "Quit", "Cancel"],
+  message: "Save quadrant before closing?",
+  detail: "Any unsaved changes will be lost",
+  defaultId: 0,
+  cancelId: 2,
+  noLink: true,
+};
+
+function saveQuadrant() {
+  console.log("save quadrant is called");
+  mainWindow.webContents.send("save-get-quadObj");
+  ipcMain.on("save-set-quadObj", (e, quadObj) => {
+    quadObj["settings"] = store.get("settings");
+    dialog
+      .showSaveDialog(mainWindow, saveOptions)
+      .then((result) => {
+        if (result.filePath == "") {
+          console.log("It didnt save");
+          mainWindow.webContents.send("no-save");
+          return;
+        }
+        settingsWindow.webContents.send("do-save");
+        console.log(result.filePath, "this is filePath");
+
+        if (result.filePath) {
+          fs.writeFile(result.filePath + "", JSON.stringify(quadObj), (err) => {
+            if (err) throw err;
+            console.log("Quadrant successfully saved...");
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+}

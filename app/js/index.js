@@ -5,6 +5,7 @@ const mousetrap = require("mousetrap");
 
 const body = document.querySelector("body");
 const blurrable = document.querySelector(".blurrable");
+let saved = true;
 
 document.addEventListener("DOMContentLoaded", function () {
   var elems = document.querySelectorAll("select");
@@ -69,6 +70,8 @@ btnAdd.addEventListener("click", (e) => {
   task.focus();
   task.value = "";
   taskDesc.value = "";
+
+  saved = false;
 });
 
 // List of the ols of the Quadrant
@@ -172,6 +175,8 @@ extendInfo.addEventListener("dblclick", (e) => {
   if (extendInfo.children[1].children.length == 0) {
     extendInfo.children[1].classList.add("further-info");
   }
+
+  saved = false;
 });
 
 // Toggle the extend-info div off when any other place is clicked
@@ -195,6 +200,7 @@ document.addEventListener("click", function (e) {
     if (completeTask.children.length == 0) {
       completeTask.classList.add("further-info");
     }
+    saved = false;
   }
 });
 
@@ -259,7 +265,20 @@ ipcRenderer.on("settings-get", (e, settings) => {
 
 // saving the quadrants
 ipcRenderer.on("save-get-quadObj", (e) => {
+  console.log("Save init");
   ipcRenderer.send("save-set-quadObj", saveQuadrant());
+});
+
+ipcRenderer.on("no-save", (e) => {
+  console.log("set nosave");
+  saved = false;
+  console.log(saved);
+});
+
+// To check if the state of the app is saved before closing
+ipcRenderer.on("saved-check", (e) => {
+  console.log(saved, "this is saved");
+  ipcRenderer.send("saved-status", saved);
 });
 
 ipcRenderer.on("load-set-quadObj", (e, quadObj) => {
@@ -475,6 +494,8 @@ function saveQuadrant() {
 
   quadObj["complete"] = getTask(completeTask);
 
+  saved = true;
+
   return quadObj;
 }
 
@@ -560,6 +581,8 @@ function loadQuadrants(quadObj) {
   if (botRight.classList.contains("further-info")) {
     botRight.classList.remove("further-info");
   }
+
+  saved = true;
 }
 
 function loadComplete(completeTask, newLi, taskTxt, descTxt, date) {

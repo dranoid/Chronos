@@ -1,4 +1,5 @@
 const { ipcRenderer } = require("electron");
+let saved = true;
 
 // Initialize materialize elements
 document.addEventListener("DOMContentLoaded", function () {
@@ -71,6 +72,7 @@ btnChange.addEventListener("click", (e) => {
   ipcRenderer.send("settings-quadName", newQuadName);
 
   // tlChange.focus();
+  saved = false;
 });
 
 const btnInterval = document.getElementById("btn-interval");
@@ -110,6 +112,15 @@ btnInterval.addEventListener("click", (e) => {
   interval.value = "";
   dayWk.selectedIndex = 0;
   interval.focus();
+  saved = false;
+});
+
+ipcRenderer.on("saved-check", (e) => {
+  console.log(saved, "this is saved");
+  ipcRenderer.send("settings-saved-status", saved);
+});
+ipcRenderer.on("do-save", (e) => {
+  saved = true;
 });
 
 // const reloadCheck = document.getElementById("restart");
