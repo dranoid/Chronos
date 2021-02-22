@@ -41,6 +41,7 @@ function createWindow() {
     width: 1000,
     height: 700,
     backgroundColor: "#48426d",
+    icon:'./app/assets/icons/quadra_48x48.png',
     webPreferences: {
       //preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -138,6 +139,7 @@ function createAboutWindow() {
       height: 500,
       resizable: isDev ? true : false,
       backgroundColor: "#48426d",
+      icon: "./app/assets/icons/quadra_48x48.png",
       modal: true,
       parent: mainWindow,
       webPreferences: {
@@ -175,6 +177,7 @@ function createContactWindow() {
       height: 400,
       resizable: isDev ? true : false,
       backgroundColor: "#48426d",
+      icon: "./app/assets/icons/quadra_48x48.png",
       modal: true,
       parent: mainWindow,
       webPreferences: {
@@ -210,6 +213,7 @@ function createSettingsWindow() {
       width: 500,
       height: 450,
       backgroundColor: "#48426d",
+      icon: "./app/assets/icons/quadra_48x48.png",
       modal: true,
       parent: mainWindow,
       webPreferences: {
