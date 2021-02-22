@@ -303,6 +303,7 @@ ipcRenderer.on("already-complete", (e, exitArr) => {
       }
     }
   }
+  saved = false;
 });
 
 // Complete interval part

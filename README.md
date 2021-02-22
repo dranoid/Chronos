@@ -1,6 +1,6 @@
 # Quadra
 
-This is an Electron application that helps you in prioritizing your time by dividing your tasks into quadrants.
+This is an Electron application that helps you in prioritizing your time by dividing your tasks into quadrants. The app was built using a modified materialize css for the frontend and ElectronJS on the backend.
 
 ## About Quadra
 

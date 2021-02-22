@@ -171,8 +171,8 @@ function createContactWindow() {
   if (!contactWindow || contactWindow == null) {
     contactWindow = new BrowserWindow({
       title: "Quadra",
-      width: 500,
-      height: 350,
+      width: 550,
+      height: 400,
       resizable: isDev ? true : false,
       backgroundColor: "#48426d",
       modal: true,
@@ -295,8 +295,10 @@ ipcMain.on("check-interval", (e, taskArr) => {
       let dateNow = moment(datePick);
       let time = settings.interval;
       let dateThen = moment(taskArr[i].time);
-      // console.log(dateNow.diff(dateThen, "days"));
-      if (dateNow.diff(dateThen, "days") > time) {
+      // console.log(dateNow.diff(dateThen, "hours"));
+      // console.log(time * 24, "time");
+      if (dateNow.diff(dateThen, "hours") > time * 24) {
+        // for an odd reason days is not working, so use hours and convert time from settings to hours
         taskArr[i].index = i;
         exitArr.push(taskArr[i]);
       }
