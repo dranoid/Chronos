@@ -5,6 +5,10 @@ const fs = require("fs");
 const Store = require("./Store.js");
 const moment = require("moment");
 let status = 0;
+let processObj = {
+  path: "",
+  status: false,
+};
 
 // Set environment
 process.env.NODE_ENV = "development";
@@ -34,6 +38,33 @@ const store = new Store({
   },
 });
 
+// handling using an associated file to open the app
+let pathName;
+console.log(process.argv, "args array");
+
+if (process.argv.length >= 2 && process.argv[1] != ".") {
+  let work = process.argv;
+
+  let newWork = app.isPackaged ? work.slice(1) : work.slice(2);
+  let longArr = newWork.join(" ");
+  let cutArr = longArr.trim().split(".qdr ");
+  let firstOne = cutArr[0] + ".qdr";
+  processObj.path = firstOne;
+  processObj.status = true;
+  console.log(firstOne, "first one");
+}
+
+// console.log(process.argv.slice(2), "SO slice code");
+// for (let i = 0; i < process.argv.length; i++) {
+//   let ext = path.extname(path.basename(process.argv[i]));
+//   // process.argv[i].replace(/(\s+)/g, '\\$1')
+//   if (ext.toLowerCase() == ".qdr") {
+//     console.log(process.argv[i]);
+//     // loadQuadrant(process.argv[i]);
+//     // break;
+//   }
+// }
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -41,7 +72,7 @@ function createWindow() {
     width: 1000,
     height: 700,
     backgroundColor: "#48426d",
-    icon:'./app/assets/icons/quadra_48x48.png',
+    icon: "./app/assets/icons/quadra_48x48.png",
     webPreferences: {
       //preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -52,9 +83,9 @@ function createWindow() {
   mainWindow.loadFile("app/index.html");
 
   // Open the DevTools.
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // if (isDev) { // temporary config for packaging
+  mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.on("close", (e) => {
     const pseudoSave = false;
@@ -101,9 +132,24 @@ app.whenReady().then(() => {
   createWindow();
 
   const settings = store.get("settings");
-  mainWindow.webContents.on("dom-ready", () => {
-    mainWindow.webContents.send("settings-get", settings); //mainWindow since its the one that will use the settings
-  });
+  if (processObj.status) {
+    mainWindow.webContents.on("dom-ready", () => {
+      setTimeout(() => {
+        loadQuadrant(processObj.path);
+      }, 1000);
+    });
+  } else if (processObj.status == false) {
+    mainWindow.webContents.on("dom-ready", () => {
+      mainWindow.webContents.send("settings-get", settings); //mainWindow since its the one that will use the settings
+    });
+  }
+
+  // mainWindow.webContents.on("dom-ready", () => {
+  //   mainWindow.webContents.send("alert"); //mainWindow since its the one that will use the settings
+  //   // setTimeout(() => {
+  //   loadQuadrant("C:\\Users\\DG\\Desktop\\arg testQuad.qdr");
+  //   // }, 1000);
+  // });
 
   //this is where the changing menu should take place!!!
   changeMenu(settings);
@@ -331,19 +377,15 @@ const template = [
           dialog
             .showOpenDialog(mainWindow, openOptions)
             .then((result) => {
+              console.log(result);
               console.log(result.filePaths[0] + "");
               if (result === undefined) {
                 console.log("No file selected");
                 return;
               }
-              fs.readFile(result.filePaths[0], "utf8", (err, data) => {
-                if (err) throw err;
-                console.log("File popped");
-                // console.log(data);
-                const quadObj = JSON.parse(data);
-                store.set("settings", quadObj.settings);
-                mainWindow.webContents.send("load-set-quadObj", data);
-              });
+              const path = result.filePaths[0];
+              console.log(result.filePaths[0], "from result filepath");
+              loadQuadrant(path);
             })
             .catch((err) => {
               console.log(err);
@@ -515,7 +557,6 @@ function saveQuadrant() {
           mainWindow.webContents.send("no-save");
           return;
         }
-        settingsWindow.webContents.send("do-save");
         console.log(result.filePath, "this is filePath");
 
         if (result.filePath) {
@@ -528,5 +569,17 @@ function saveQuadrant() {
       .catch((err) => {
         console.log(err);
       });
+  });
+}
+function loadQuadrant(path) {
+  console.log(path, "from load quadrant");
+  fs.readFile(path, "utf8", (err, data) => {
+    if (err) throw err;
+    console.log("File popped");
+    // console.log(data);
+    const quadObj = JSON.parse(data);
+    store.set("settings", quadObj.settings);
+    changeMenu(quadObj.settings);
+    mainWindow.webContents.send("load-set-quadObj", data);
   });
 }

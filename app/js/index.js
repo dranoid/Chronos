@@ -282,13 +282,12 @@ ipcRenderer.on("saved-check", (e) => {
 });
 
 ipcRenderer.on("load-set-quadObj", (e, quadObj) => {
+  console.log("We go dey alright");
   loadQuadrants(JSON.parse(quadObj));
 });
 
 ipcRenderer.on("already-complete", (e, exitArr) => {
   for (let i = 0; i < exitArr.length; i++) {
-    // find a better way to compare, indexes are fucking it up
-
     const liArr = Array.from(completeTask.children);
     for (let j = 0; j < liArr.length; j++) {
       const liChildArr = Array.from(liArr[j].children);
@@ -299,11 +298,11 @@ ipcRenderer.on("already-complete", (e, exitArr) => {
           liChildArr[k].innerText == exitArr[i].time
         ) {
           completeTask.removeChild(completeTask.children[j]);
+          saved = false;
         }
       }
     }
   }
-  saved = false;
 });
 
 // Complete interval part
@@ -622,3 +621,7 @@ function loadComplete(completeTask, newLi, taskTxt, descTxt, date) {
   completeTask.appendChild(newLi);
   completeTask.classList.remove("further-info");
 }
+
+ipcRenderer.on("alert", (e) => {
+  console.log("This works");
+});
