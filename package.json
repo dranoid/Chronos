@@ -3,11 +3,56 @@
   "version": "1.0.0",
   "description": "A time management app",
   "main": "main.js",
+  "build":{
+    "appId":"com.electron.quadra",
+    "productName":"Quadra",
+    "win":{
+      "target":"nsis",
+      "icon":"build/quadra_256x256.ico"
+    },
+    "fileAssociations": [
+      {
+        "ext": "qdr",
+        "name": "QDR File",
+        "role": "Editor"
+      }
+    ],
+    "nsis":{
+      "oneClick":true,
+      "perMachine": true
+    },
+    "mac":{
+      "category":"public.app-category.productivity",
+      "target":"dmg",
+      "icon":"build/quadra_1024x1024.icns"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "icon":"build/quadra_1024x1024.png",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
   "scripts": {
     "start": "electron .",
     "dev": "nodemon --exec electron .",
-    "test-args":"electron main.js C:\\Users\\DG\\Desktop\\please work.qdr C:\\Users\\DG\\Desktop\\arg testQuad.qdr C:\\Users\\DG\\Desktop\\testQuad.qdr",
-    "dev-test-args":"nodemon --exec electron main.js electron main.js C:\\Users\\DG\\Desktop\\arg testQuad.qdr C:\\Users\\DG\\Desktop\\please work.qdr C:\\Users\\DG\\Desktop\\testQuad.qdr"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "repository": "https://github.com/dranoid/Quadra",
   "author": "Daramola Oluwadunsin",

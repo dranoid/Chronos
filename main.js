@@ -11,7 +11,7 @@ let processObj = {
 };
 
 // Set environment
-process.env.NODE_ENV = "development";
+process.env.NODE_ENV = "production";
 const isDev = process.env.NODE_ENV == "development" ? true : false;
 
 const isMac = process.platform === "darwin" ? true : false;
@@ -48,7 +48,14 @@ if (process.argv.length >= 2 && process.argv[1] != ".") {
   let newWork = app.isPackaged ? work.slice(1) : work.slice(2);
   let longArr = newWork.join(" ");
   let cutArr = longArr.trim().split(".qdr ");
-  let firstOne = cutArr[0] + ".qdr";
+  let ext = path.extname(path.basename(cutArr[0]));
+
+  let firstOne;
+if (ext.toLowerCase() == ".qdr") {
+    firstOne= cutArr[0];
+  }else{
+    firstOne= cutArr[0] + ".qdr";
+  }
   processObj.path = firstOne;
   processObj.status = true;
   console.log(firstOne, "first one");
@@ -83,9 +90,9 @@ function createWindow() {
   mainWindow.loadFile("app/index.html");
 
   // Open the DevTools.
-  // if (isDev) { // temporary config for packaging
+  if (isDev) { 
   mainWindow.webContents.openDevTools();
-  // }
+  }
 
   mainWindow.on("close", (e) => {
     const pseudoSave = false;
