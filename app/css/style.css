@@ -89,11 +89,11 @@ p.sub-instruction {
 }
 
 .quad-title {
-  margin-left: 28%;
+  margin-left: 36%;
   margin-top: 10px;
   margin-bottom: 20px;
-  /* left: 50%; */
-  /* transform: translateX(-50%); */
+  /* margin-left: 50%;
+  transform: translateX(-50%); */
 }
 .bored {
   border: 1px solid #312c51;
