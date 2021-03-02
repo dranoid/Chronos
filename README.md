@@ -25,4 +25,12 @@ yarn install
 yarn start
 ```
 
+## To Package
+
+To package the app into an installable file, in the project root directory run the following from your command line:
+
+```bash
+yarn run dist
+```
+
 Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
