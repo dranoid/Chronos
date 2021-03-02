@@ -11,7 +11,7 @@ let processObj = {
 };
 
 // Set environment
-process.env.NODE_ENV = "production";
+process.env.NODE_ENV = "development";
 const isDev = process.env.NODE_ENV == "development" ? true : false;
 
 const isMac = process.platform === "darwin" ? true : false;
@@ -51,14 +51,15 @@ if (process.argv.length >= 2 && process.argv[1] != ".") {
   let ext = path.extname(path.basename(cutArr[0]));
 
   let firstOne;
-if (ext.toLowerCase() == ".qdr") {
-    firstOne= cutArr[0];
-  }else{
-    firstOne= cutArr[0] + ".qdr";
+  if (ext.toLowerCase() == ".qdr") {
+    firstOne = cutArr[0];
+  } else {
+    firstOne = cutArr[0] + ".qdr";
   }
   processObj.path = firstOne;
   processObj.status = true;
   console.log(firstOne, "first one");
+  processObj.basename = path.basename(firstOne);
 }
 
 // console.log(process.argv.slice(2), "SO slice code");
@@ -90,8 +91,8 @@ function createWindow() {
   mainWindow.loadFile("app/index.html");
 
   // Open the DevTools.
-  if (isDev) { 
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on("close", (e) => {
@@ -142,6 +143,8 @@ app.whenReady().then(() => {
   if (processObj.status) {
     mainWindow.webContents.on("dom-ready", () => {
       setTimeout(() => {
+        mainWindow.webContents.send("title-set", processObj.basename);
+        console.log("basename");
         loadQuadrant(processObj.path);
       }, 1000);
     });
@@ -313,7 +316,7 @@ ipcMain.on("settings-quadName", (e, quadNames) => {
   changeMenu(settings);
 });
 ipcMain.on("settings-interval", (e, intervalObj) => {
-  if (intervalObj.dayWk == week) {
+  if (intervalObj.dayWk == "week") {
     intervalObj.interval = intervalObj.interval * 7; // to convert it to days
   }
   const settings = store.get("settings");

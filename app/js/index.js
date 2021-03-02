@@ -252,6 +252,12 @@ ipcRenderer.on("extend-br", (eve) => {
   createExtendInfo(extendInfo, botRight, headerClass, olClass);
 });
 
+ipcRenderer.on("title-set", (e, data) => {
+  console.log(data);
+  const title = document.querySelector('title');
+  title.innerHTML=data;
+});
+
 const tlHeader = document.querySelector(".top-left h5");
 const trHeader = document.querySelector(".top-right h5");
 const blHeader = document.querySelector(".bottom-left h5");
@@ -361,6 +367,8 @@ function createExtendInfo(extendInfo, el, headerClass, olClass) {
 
 function pushToComplete(task, ol) {
   console.log(task.parentNode.classList);
+  let date = moment().format("DD-MMM-YYYY HH:mm:SS");
+  console.log(date);
   let liArr = Array.from(ol.children);
 
   // to remove the element in both extend-info and the quadrant
@@ -378,6 +386,8 @@ function pushToComplete(task, ol) {
   for (let j = 0; j < elArr.length; j++) {
     if (!elArr[j].classList.contains("time")) {
       elArr[j].classList.add("further-info");
+    } else if (elArr[j].classList.contains("time")) {
+      elArr[j].innerHTML = date;
     }
   }
   const btnSpan = document.createElement("span");
