@@ -50,7 +50,6 @@
   },
   "scripts": {
     "start": "electron .",
-    "test-args":"electron main.js C:\\Users\\DG\\Desktop\\please work.qdr C:\\Users\\DG\\Desktop\\arg testQuad.qdr C:\\Users\\DG\\Desktop\\testQuad.qdr",
     "dev": "nodemon --exec electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
