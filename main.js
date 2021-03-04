@@ -11,7 +11,7 @@ let processObj = {
 };
 
 // Set environment
-process.env.NODE_ENV = "development";
+process.env.NODE_ENV = "production";
 const isDev = process.env.NODE_ENV == "development" ? true : false;
 
 const isMac = process.platform === "darwin" ? true : false;
@@ -581,15 +581,17 @@ function saveQuadrant() {
       });
   });
 }
-function loadQuadrant(path) {
-  console.log(path, "from load quadrant");
-  fs.readFile(path, "utf8", (err, data) => {
+function loadQuadrant(paths) {
+  console.log(paths, "from load quadrant");
+  fs.readFile(paths, "utf8", (err, data) => {
     if (err) throw err;
     console.log("File popped");
     // console.log(data);
     const quadObj = JSON.parse(data);
     store.set("settings", quadObj.settings);
     changeMenu(quadObj.settings);
+    const baseName = path.basename(paths);
+    mainWindow.webContents.send("title-load-set", baseName);
     mainWindow.webContents.send("load-set-quadObj", data);
   });
 }

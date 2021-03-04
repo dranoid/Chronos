@@ -254,8 +254,8 @@ ipcRenderer.on("extend-br", (eve) => {
 
 ipcRenderer.on("title-set", (e, data) => {
   console.log(data);
-  const title = document.querySelector('title');
-  title.innerHTML=data;
+  const title = document.querySelector("title");
+  title.innerHTML = data;
 });
 
 const tlHeader = document.querySelector(".top-left h5");
@@ -290,6 +290,11 @@ ipcRenderer.on("saved-check", (e) => {
 ipcRenderer.on("load-set-quadObj", (e, quadObj) => {
   console.log("We go dey alright");
   loadQuadrants(JSON.parse(quadObj));
+});
+
+ipcRenderer.on("title-load-set", (e, data) => {
+  const title = document.querySelector("title");
+  title.innerHTML = data;
 });
 
 ipcRenderer.on("already-complete", (e, exitArr) => {
